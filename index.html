@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contadores</title>
+</head>
+<body>
+    <h1>Contadores</h1>
+    <div class="item">
+        <span>Elemento 1:</span>
+        <button onclick="sumarUno(1)">+</button>
+        <span id="contador1">0</span>
+        <button onclick="restarUno(1)" id="restar1" disabled>-</button>
+    </div>
+    <div class="item">
+        <span>Elemento 2:</span>
+        <button onclick="sumarUno(2)">+</button>
+        <span id="contador2">0</span>
+        <button onclick="restarUno(2)" id="restar2" disabled>-</button>
+    </div>
+    <div class="item">
+        <span>Elemento 3:</span>
+        <button onclick="sumarUno(3)">+</button>
+        <span id="contador3">0</span>
+        <button onclick="restarUno(3)" id="restar3" disabled>-</button>
+    </div>
+    <div class="item">
+        <span>Elemento 4:</span>
+        <button onclick="sumarUno(4)">+</button>
+        <span id="contador4">0</span>
+        <button onclick="restarUno(4)" id="restar4" disabled>-</button>
+    </div>
+    <button id="enviar" onclick="enviarContadores()">Enviar</button>
+
+    <script>
+        const dato = document.getElementById('contador1');
+
+
+        // Variables para los contadores
+        var contadores = [0, 0, 0, 0];
+
+        // Función para sumar 1 al contador
+        function sumarUno(index) {
+            contadores[index - 1]++;
+            actualizarContador(index);
+            actualizarBotonRestar(index);
+        }
+
+        // Función para restar 1 al contador
+        function restarUno(index) {
+            if (contadores[index - 1] > 0) {
+                contadores[index - 1]--;
+                actualizarContador(index);
+                actualizarBotonRestar(index);
+            }
+        }
+
+        // Función para actualizar el valor del contador en la vista
+        function actualizarContador(index) {
+            var contadorElement = document.getElementById("contador" + index);
+            contadorElement.textContent = contadores[index - 1];
+        }
+
+        // Función para habilitar o deshabilitar el botón de restar según el valor del contador
+        function actualizarBotonRestar(index) {
+            var botonRestar = document.getElementById("restar" + index);
+            botonRestar.disabled = contadores[index - 1] === 0;
+        }
+
+        // Función para enviar los contadores a una API y reiniciarlos
+        function enviarContadores2() {
+            // Aquí puedes enviar los contadores a una API (usando una solicitud HTTP, por ejemplo)
+            // Luego, reinicia los contadores a 0
+            contadores = [0, 0, 0, 0];
+
+            // Actualiza la vista para mostrar los contadores reiniciados
+            for (var i = 1; i <= 4; i++) {
+                actualizarContador(i);
+                actualizarBotonRestar(i);
+            }
+        }
+        // Función para enviar los contadores a la API
+        function enviarContadores() {
+        // Crear un objeto con los datos de los contadores
+        var data = {
+        contador1: contadores[0],
+        contador2: contadores[1],
+        contador3: contadores[2],
+        contador4: contadores[3]
+        };
+
+        // Configurar la URL de la API (reemplaza con la URL de tu API)
+        var apiUrl = 'https://sheet.best/api/sheets/e1d9b67e-0236-41f4-b2e2-a4a06e8e88ed';
+
+        // Configurar la solicitud HTTP POST
+        var requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+
+        // Realizar la solicitud fetch a la API
+        fetch(apiUrl, requestOptions)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error en la solicitud a la API');
+            }
+            return response.json();
+        })
+        .then(responseData => {
+            // Manejar la respuesta de la API si es necesario
+            console.log('Respuesta de la API:', responseData);
+
+            // Reiniciar los contadores a 0 en la vista
+            contadores = [0, 0, 0, 0];
+            for (var i = 1; i <= 4; i++) {
+                actualizarContador(i);
+                actualizarBotonRestar(i);
+            }
+        })
+        .catch(error => {
+            console.error('Error al enviar los contadores a la API:', error);
+        });
+}
+
+    </script>
+</body>
+</html>
